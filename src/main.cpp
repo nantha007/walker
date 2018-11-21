@@ -26,39 +26,51 @@
  *  @author Nantha Kumar Sunder
  *  @copyright 2018
  */
-#include "walker.h"
+#include "include/walker.h"
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/LaserScan.h"
-
+/**
+ *  @brief main function controls the motion of the turtlebot
+ *  @param argc is the number of argument
+ *  @param argv is the arguments
+ *  @return None
+ */
 int main(int argc, char **argv) {
   ros::init(argc, argv, "walker");
   ros::NodeHandle n;
-  ros::Duration(5).sleep();
   ros::Subscriber getDistance;
   ros::Publisher setVel;
   geometry_msgs::Twist msg;
-    msg.linear.x = 0.0;
-    msg.linear.y = 0.0;
-    msg.linear.z = 0.0;
-    msg.angular.x = 0.0;
-    msg.angular.y = 0.0;
-    msg.angular.z = 0.0;
+  // initial value of the msg
+  msg.linear.x = 0.0;
+  msg.linear.y = 0.0;
+  msg.linear.z = 0.0;
+  msg.angular.x = 0.0;
+  msg.angular.y = 0.0;
+  msg.angular.z = 0.0;
+  // creating a walker object
   walker obj;
+  // subscribing to the /scan topic
   getDistance = n.subscribe("/scan", 1000, &walker::walkerCallback, &obj);
+  // advertising to control the velocity of the turtlebot
   setVel = n.advertise < geometry_msgs::Twist
       > ("/mobile_base/commands/velocity", 100);
-ros::Rate loop_rate(2);
+  ros::Rate loop_rate(10);
   while (ros::ok()) {
-    if (obj.getDist() < 1){
-	msg.linear.x = 0;
-        msg.angular.x = 1;
+    // if the robot close to collision, then change the course
+    if (obj.checkDist == 1) {
+      // stop the robot and changing the course
+      msg.linear.x = 0;
+      msg.angular.z = -1;
     } else {
-        msg.angular.x = 0;
-        msg.linear.x = 1;
+      // moving at a constant speed
+      msg.angular.z = 0;
+      msg.linear.x = 0.1;
     }
+    // publishing the robot velocity
     setVel.publish(msg);
     ros::spinOnce();
     loop_rate.sleep();
   }
-
 }
+
