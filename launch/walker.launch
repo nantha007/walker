@@ -16,7 +16,7 @@
     	  pkg="rosbag" 
     	  type="record" 
     	  name="record"
-    	  args="-a -O $(find walker)/results/record.bag -x /camera/(.*)"
+    	  args="-a -O $(find walker)/Results/record.bag -x /camera/(.*)"
     	  if="$(arg rec)"
  	/>
 </launch>
