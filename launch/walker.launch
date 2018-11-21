@@ -1,0 +1,22 @@
+<launch>
+	<include 
+          file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch"
+        />
+	<node
+	  name="walker"
+          type="walker"
+          pkg="walker"
+          launch-prefix="xterm -e"
+        />
+	<arg 
+          name ="rec" 
+          default="false"
+        />
+	<node 
+    	  pkg="rosbag" 
+    	  type="record" 
+    	  name="record"
+    	  args="-a -O $(find walker)/results/record.bag -x /camera/(.*)"
+    	  if="$(arg rec)"
+ 	/>
+</launch>
