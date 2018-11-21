@@ -31,12 +31,15 @@
 #include "sensor_msgs/LaserScan.h"
 /**
  *  @brief Class for walker node
+ *  @param dist stores the min distance from the obstacle
+ *  @param checkDist stores 1 if there is an obstacle
  */
-class walker{
-    public:
-	void walkerCallback(const sensor_msgs::LaserScan::ConstPtr& val);
-        float getDist();
-    private:
-    	float dist;
+class walker {
+ public:
+  void walkerCallback(const sensor_msgs::LaserScan::ConstPtr& val);
+  float getDist();
+  bool checkDist;
+ private:
+  float dist;
 };
 
